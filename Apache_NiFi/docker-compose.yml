@@ -1,0 +1,60 @@
+version: '3'
+services:
+  nifi:
+    hostname: moein-machine1
+    container_name: nifi
+    image: 'apache/nifi:1.23.2'
+    ports:
+      - 8443:8443
+    networks:
+      nifi_network:
+        ipv4_address: 172.19.0.2
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=admin
+      - SINGLE_USER_CREDENTIALS_PASSWORD=ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
+    volumes:
+      - nifi_content_repository:/opt/nifi/nifi-current/content_repository
+      - nifi_database_repository:/opt/nifi/nifi-current/database_repository
+      - nifi_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+      - nifi_provenance_repository:/opt/nifi/nifi-current/provenance_repository
+      - nifi_logs:/opt/nifi/nifi-current/logs
+      - nifi_state:/opt/nifi/nifi-current/state
+      - nifi_conf:/opt/nifi/nifi-current/conf
+      - ./data:/home/nifi/data  #My Directory for putfile(dont forget to give permission rwx to other /daata in container)
+
+
+
+  nifi_registry:
+    hostname: moein-machine1
+    container_name: nifi_registry
+    image: 'docker.arvancloud.ir/apache/nifi-registry:1.23.2'    
+    ports:
+      - 18080:18080
+    networks:
+      nifi_network:
+        ipv4_address: 172.19.0.3
+    volumes:
+         #  copying the  (/database) directory from the container to your local directory to persist
+      - ./nifi_registry_conf/database:/opt/nifi-registry/nifi-registry-current/database
+      - ./nifi_registry_conf/flow_storage:/opt/nifi-registry/nifi-registry-current/flow_storage
+
+
+
+networks:
+  nifi_network:
+    driver: bridge
+    ipam:
+        config:
+        - subnet: 172.19.0.0/16
+          gateway: 172.19.0.1
+  
+    
+volumes:
+  nifi_content_repository:
+  nifi_database_repository:
+  nifi_flowfile_repository:
+  nifi_provenance_repository:
+  nifi_logs:
+  nifi_state:
+  nifi_conf:
+
