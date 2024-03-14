@@ -27,7 +27,7 @@ services:
   nifi_registry:
     hostname: moein-machine1
     container_name: nifi_registry
-    image: 'docker.arvancloud.ir/apache/nifi-registry:1.23.2'    
+    image: 'apache/nifi-registry:1.23.2'    
     ports:
       - 18080:18080
     networks:
